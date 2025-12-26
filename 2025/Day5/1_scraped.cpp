@@ -14,7 +14,7 @@ struct range_set{
     //key is lower bound value is lower
     map<long long, long long> set_ranges;
     void insert(long long start, long long end) {
-        //if start is not in set make new key starting at start
+        //find if in set (and if already in set find node that contains start)
         bool not_in_set;
         auto start_it = set_ranges.upper_bound(start);
         if (start_it == set_ranges.begin()) {
@@ -23,10 +23,13 @@ struct range_set{
             start_it--;
             not_in_set = start_it->second < start;
         }
+        //if not in set insert
         if (not_in_set) {
             set_ranges.insert(pair(start,end));
             start_it = set_ranges.find(start);
-        } else {
+        }
+        //if in set then expand node range if needed
+        else {
             start_it->second = max(start_it->second,end);
         }
         //merge the iterator that contains start with ranges that overlap
